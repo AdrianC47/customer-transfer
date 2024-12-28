@@ -18,7 +18,7 @@ public class Cuenta  extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int codigo; // Considera usar Long en lugar de int
+    private Long codigo;
 
     @ManyToOne // Esta anotación indica la relación con Cliente
     @JoinColumn(name = "cliente_id") // Nombre de la clave foránea en la base de datos

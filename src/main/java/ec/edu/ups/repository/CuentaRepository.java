@@ -7,4 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class CuentaRepository implements PanacheRepository <Cuenta> {
+    public Cuenta findByNumeroCuenta(int numeroCuenta) {
+        return find("numeroCuenta", numeroCuenta).firstResult();
+    }
 }
