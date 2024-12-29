@@ -86,5 +86,24 @@ public class TransferControllerTest {
                 .body(is("Cuenta no encontrada"));
     }
 
+    @Test
+    public void testTransferenciaMontoInvalidoEndpoint() {
+        // Configurar datos de prueba
+        Cuenta origen = new Cuenta(1L, null, 1001, 1000.0);
+        Cuenta destino = new Cuenta(2L, null, 1002, 500.0);
+
+        when(cuentaService.findByNumeroCuenta(1001)).thenReturn(origen);
+        when(cuentaService.findByNumeroCuenta(1002)).thenReturn(destino);
+
+        // Simular la solicitud HTTP con monto negativo
+        given()
+                .body(new TransferenciaRequest(1001, 1002, -500.0, "Monto inválido"))
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/transferencias/transferir")
+                .then()
+                .statusCode(400) // Código esperado para error de negocio
+                .body(is("Fondos insuficientes")); // La lógica actual puede reutilizar este mensaje para montos inválidos
+    }
 
 }
