@@ -47,4 +47,27 @@ public class TransferControllerTest {
                 .statusCode(200)
                 .body("exito", is(true));
     }
+
+    @Test
+    public void testTransferenciaFondosInsuficientesEndpoint() {
+        // Configurar datos de prueba
+        Cuenta origen = new Cuenta(1L, null, 1001, 500.0);
+        Cuenta destino = new Cuenta(2L, null, 1002, 500.0);
+        Transaccion transaccion = new Transaccion(null, origen, destino, 700.0, "Pago fallido", false, LocalDateTime.now());
+
+        when(cuentaService.findByNumeroCuenta(1001)).thenReturn(origen);
+        when(cuentaService.findByNumeroCuenta(1002)).thenReturn(destino);
+        when(cuentaService.transferirDinero(origen, destino, 700.0, "Pago fallido")).thenReturn(transaccion);
+
+        // Simular la solicitud HTTP
+        given()
+                .body(new TransferenciaRequest(1001, 1002, 700.0, "Pago fallido"))
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/transferencias/transferir")
+                .then()
+                .statusCode(400) // Código esperado para error de negocio
+                .body(is("Fondos insuficientes"));
+    }
+
 }
