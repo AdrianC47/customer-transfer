@@ -111,5 +111,20 @@ public class CuentaServiceTest {
         assertEquals(500.0, destino.getSaldo(), "El saldo de destino no debe cambiar");
     }
 
+    @Test
+    public void testTransferenciaEntreMismaCuenta() {
+        // Configurar datos de prueba
+        Cuenta origen = new Cuenta(1L, null, 1001, 1000.0);
+
+        when(cuentaRepository.findByNumeroCuenta(1001)).thenReturn(origen);
+
+        // Llamar al metodo
+        Transaccion transaccion = cuentaService.transferirDinero(origen, origen, 500.0, "Misma cuenta");
+
+        // Validaciones
+        assertNotNull(transaccion, "La transacción no debe ser nula");
+        assertFalse(transaccion.getExito(), "La transacción debe fallar");
+        assertEquals(1000.0, origen.getSaldo(), "El saldo no debe cambiar");
+    }
 
 }
