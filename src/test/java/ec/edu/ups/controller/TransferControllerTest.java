@@ -106,5 +106,22 @@ public class TransferControllerTest {
                 .body(is("Monto inválido")); // Cambia el mensaje esperado
     }
 
+    @Test
+    public void testTransferenciaEntreMismaCuentaEndpoint() {
+        // Configurar datos de prueba
+        Cuenta origen = new Cuenta(1L, null, 1001, 1000.0);
+
+        when(cuentaService.findByNumeroCuenta(1001)).thenReturn(origen);
+
+        // Simular la solicitud HTTP
+        given()
+                .body(new TransferenciaRequest(1001, 1001, 500.0, "Misma cuenta"))
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/transferencias/transferir")
+                .then()
+                .statusCode(400) // Código esperado para error de negocio
+                .body(is("Fondos insuficientes")); // La lógica actual puede reutilizar este mensaje
+    }
 
 }
