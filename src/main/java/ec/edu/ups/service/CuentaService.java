@@ -23,10 +23,19 @@ public class CuentaService {
         this.cuentaRepository   = cuentaRepository;
     }
     public Transaccion transferirDinero(Cuenta origen, Cuenta destino, Double monto, String descripcion) {
+        if (origen.getSaldo() < monto) {
+            return new Transaccion(null, origen, destino, monto, descripcion, false, LocalDateTime.now());
+        }
 
+        origen.setSaldo(origen.getSaldo() - monto);
+        destino.setSaldo(destino.getSaldo() + monto);
 
-        return new Transaccion(null, null, null, null, null, true, LocalDateTime.now());
+        cuentaRepository.persist(origen);
+        cuentaRepository.persist(destino);
+
+        return new Transaccion(null, origen, destino, monto, descripcion, true, LocalDateTime.now());
     }
+
 
     public Cuenta findByNumeroCuenta(int numeroCuenta) {
         return cuentaRepository.findByNumeroCuenta(numeroCuenta);
