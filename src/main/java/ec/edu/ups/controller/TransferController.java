@@ -33,6 +33,7 @@ public class TransferController {
 
     @POST
     @Path("/transferir")
+    @Produces(MediaType.APPLICATION_JSON) // Asegura que todas las respuestas sean JSON
     public Response transferir(TransferenciaRequest transferenciaRequest) {
 
 
