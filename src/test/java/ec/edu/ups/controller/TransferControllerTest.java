@@ -103,7 +103,8 @@ public class TransferControllerTest {
                 .post("/transferencias/transferir")
                 .then()
                 .statusCode(400) // Código esperado para error de negocio
-                .body(is("Fondos insuficientes")); // La lógica actual puede reutilizar este mensaje para montos inválidos
+                .body(is("Monto inválido")); // Cambia el mensaje esperado
     }
+
 
 }

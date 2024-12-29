@@ -35,13 +35,21 @@ public class TransferController {
     @Path("/transferir")
     @Produces(MediaType.APPLICATION_JSON) // Asegura que todas las respuestas sean JSON
     public Response transferir(TransferenciaRequest transferenciaRequest) {
+        // Validar monto inválido
+        if (transferenciaRequest.getMonto() == null || transferenciaRequest.getMonto() <= 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Monto inválido")
+                    .type(MediaType.TEXT_PLAIN)
+                    .build();
+        }
+
         Cuenta origen = cuentaService.findByNumeroCuenta(transferenciaRequest.getCuentaOrigen());
         Cuenta destino = cuentaService.findByNumeroCuenta(transferenciaRequest.getCuentaDestino());
 
         if (origen == null || destino == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Cuenta no encontrada")
-                    .type(MediaType.TEXT_PLAIN) // Especificar Content-Type para errores simples
+                    .type(MediaType.TEXT_PLAIN)
                     .build();
         }
 
@@ -50,14 +58,14 @@ public class TransferController {
         if (!resultado.getExito()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Fondos insuficientes")
-                    .type(MediaType.TEXT_PLAIN) // Especificar Content-Type para errores simples
+                    .type(MediaType.TEXT_PLAIN)
                     .build();
         }
-
         return Response.ok(resultado)
-                .type(MediaType.APPLICATION_JSON) // Asegurar Content-Type para respuestas exitosas
+                .type(MediaType.APPLICATION_JSON)
                 .build();
     }
+
 
 
 }
