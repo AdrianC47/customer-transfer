@@ -121,7 +121,7 @@ public class TransferControllerTest {
                 .post("/transferencias/transferir")
                 .then()
                 .statusCode(400) // Código esperado para error de negocio
-                .body(is("Fondos insuficientes")); // La lógica actual puede reutilizar este mensaje
+                .body(is("Transferencia entre la misma cuenta no permitida"));
     }
 
 }

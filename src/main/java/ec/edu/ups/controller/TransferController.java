@@ -33,7 +33,7 @@ public class TransferController {
 
     @POST
     @Path("/transferir")
-    @Produces(MediaType.APPLICATION_JSON) // Asegura que todas las respuestas sean JSON
+    @Produces(MediaType.APPLICATION_JSON)
     public Response transferir(TransferenciaRequest transferenciaRequest) {
         // Validar monto inválido
         if (transferenciaRequest.getMonto() == null || transferenciaRequest.getMonto() <= 0) {
@@ -53,6 +53,14 @@ public class TransferController {
                     .build();
         }
 
+        // Validar transferencia entre la misma cuenta
+        if (origen.getNumeroCuenta() == destino.getNumeroCuenta()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Transferencia entre la misma cuenta no permitida")
+                    .type(MediaType.TEXT_PLAIN)
+                    .build();
+        }
+
         Transaccion resultado = cuentaService.transferirDinero(origen, destino, transferenciaRequest.getMonto(), transferenciaRequest.getDescripcion());
 
         if (!resultado.getExito()) {
@@ -61,10 +69,12 @@ public class TransferController {
                     .type(MediaType.TEXT_PLAIN)
                     .build();
         }
+
         return Response.ok(resultado)
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }
+
 
 
 
