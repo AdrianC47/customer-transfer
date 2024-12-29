@@ -70,4 +70,21 @@ public class TransferControllerTest {
                 .body(is("Fondos insuficientes"));
     }
 
+    @Test
+    public void testTransferenciaCuentaNoEncontradaEndpoint() {
+        // Configurar datos de prueba
+        when(cuentaService.findByNumeroCuenta(9999)).thenReturn(null); // Cuenta no encontrada
+
+        // Simular la solicitud HTTP
+        given()
+                .body(new TransferenciaRequest(9999, 1002, 500.0, "Pago"))
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/transferencias/transferir")
+                .then()
+                .statusCode(404) // Código esperado para recurso no encontrado
+                .body(is("Cuenta no encontrada"));
+    }
+
+
 }
