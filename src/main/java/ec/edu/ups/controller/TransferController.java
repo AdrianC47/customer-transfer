@@ -35,9 +35,29 @@ public class TransferController {
     @Path("/transferir")
     @Produces(MediaType.APPLICATION_JSON) // Asegura que todas las respuestas sean JSON
     public Response transferir(TransferenciaRequest transferenciaRequest) {
+        Cuenta origen = cuentaService.findByNumeroCuenta(transferenciaRequest.getCuentaOrigen());
+        Cuenta destino = cuentaService.findByNumeroCuenta(transferenciaRequest.getCuentaDestino());
 
+        if (origen == null || destino == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Cuenta no encontrada")
+                    .type(MediaType.TEXT_PLAIN) // Especificar Content-Type para errores simples
+                    .build();
+        }
 
-        return Response.ok(null).build();
+        Transaccion resultado = cuentaService.transferirDinero(origen, destino, transferenciaRequest.getMonto(), transferenciaRequest.getDescripcion());
+
+        if (!resultado.getExito()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Fondos insuficientes")
+                    .type(MediaType.TEXT_PLAIN) // Especificar Content-Type para errores simples
+                    .build();
+        }
+
+        return Response.ok(resultado)
+                .type(MediaType.APPLICATION_JSON) // Asegurar Content-Type para respuestas exitosas
+                .build();
     }
+
 
 }
