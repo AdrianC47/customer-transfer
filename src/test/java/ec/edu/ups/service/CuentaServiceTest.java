@@ -54,4 +54,24 @@ public class CuentaServiceTest {
         assertEquals(1000.0, destino.getSaldo(), "El saldo de destino debe ser 1000");
     }
 
+    @Test
+    public void testTransferenciaFallidaPorFondosInsuficientes() {
+        // Configurar datos de prueba
+        Cuenta origen = new Cuenta(1L, null, 1001, 500.0);
+        Cuenta destino = new Cuenta(2L, null, 1002, 500.0);
+
+        when(cuentaRepository.findByNumeroCuenta(1001)).thenReturn(origen);
+        when(cuentaRepository.findByNumeroCuenta(1002)).thenReturn(destino);
+
+
+        Transaccion transaccion = cuentaService.transferirDinero(origen, destino, 700.0, "Pago fallido");
+
+        // Validaciones
+        assertNotNull(transaccion, "La transacción no debe ser nula");
+        assertFalse(transaccion.getExito(), "La transacción debe fallar");
+        assertEquals(500.0, origen.getSaldo(), "El saldo de origen no debe cambiar");
+        assertEquals(500.0, destino.getSaldo(), "El saldo de destino no debe cambiar");
+    }
+
+
 }
