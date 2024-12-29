@@ -1,5 +1,6 @@
 package ec.edu.ups.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class Cuenta  extends PanacheEntityBase {
 
     @ManyToOne // Esta anotación indica la relación con Cliente
     @JoinColumn(name = "cliente_id") // Nombre de la clave foránea en la base de datos
+    @JsonBackReference
     private Cliente cliente;
 
     private int numeroCuenta;
