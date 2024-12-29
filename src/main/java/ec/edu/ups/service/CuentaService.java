@@ -23,10 +23,22 @@ public class CuentaService {
         this.cuentaRepository   = cuentaRepository;
     }
     public Transaccion transferirDinero(Cuenta origen, Cuenta destino, Double monto, String descripcion) {
+        // Validar monto inválido
+        if (monto <= 0) {
+            return new Transaccion(null, origen, destino, monto, descripcion, false, LocalDateTime.now());
+        }
+
+        // Validar transferencia entre la misma cuenta
+        if (origen.equals(destino)) {
+            return new Transaccion(null, origen, destino, monto, descripcion, false, LocalDateTime.now());
+        }
+
+        // Validar fondos insuficientes
         if (origen.getSaldo() < monto) {
             return new Transaccion(null, origen, destino, monto, descripcion, false, LocalDateTime.now());
         }
 
+        // Realizar la transferencia
         origen.setSaldo(origen.getSaldo() - monto);
         destino.setSaldo(destino.getSaldo() + monto);
 
@@ -35,6 +47,7 @@ public class CuentaService {
 
         return new Transaccion(null, origen, destino, monto, descripcion, true, LocalDateTime.now());
     }
+
 
 
     public Cuenta findByNumeroCuenta(int numeroCuenta) {
