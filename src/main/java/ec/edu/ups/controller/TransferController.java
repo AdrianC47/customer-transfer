@@ -34,20 +34,9 @@ public class TransferController {
     @POST
     @Path("/transferir")
     public Response transferir(TransferenciaRequest transferenciaRequest) {
-        Cuenta origen = cuentaService.findByNumeroCuenta(transferenciaRequest.getCuentaOrigen());
-        Cuenta destino = cuentaService.findByNumeroCuenta(transferenciaRequest.getCuentaDestino());
 
-        if (origen == null || destino == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Cuenta no encontrada").build();
-        }
 
-        Transaccion resultado = cuentaService.transferirDinero(origen, destino, transferenciaRequest.getMonto(), transferenciaRequest.getDescripcion());
-
-        if (!resultado.getExito()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Fondos insuficientes").build();
-        }
-
-        return Response.ok(resultado).build();
+        return Response.ok(null).build();
     }
 
 }
